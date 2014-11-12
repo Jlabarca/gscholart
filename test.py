@@ -1,9 +1,9 @@
 #!/Python27/python
 import scholar as gs
-import json
+import time
+import sys,json
 import pickle
 import cgi
-import sys
 data=cgi.FieldStorage()
 articles = gs.query(search=data['consulta'].value)
 # format the articles
@@ -17,15 +17,6 @@ formatted = {
 with open('output.json', 'w') as f:
    f.write(formatted.encode('utf8'))
 
-sys.stdout.write("Content-Type: application/json")
-sys.stdout.write("\n")
-sys.stdout.write("\n")
-
-result={}   
-result['message']="Exito"
-sys.stdout.write(json.dumps(result,indent=1))
-sys.stdout.write("\n")
-
-sys.stdout.close()   
-#print ''   
-#print 'Archivo creado'+data['consulta'].value+'aa'
+#time.sleep(3)
+print ''   
+print formatted.encode('utf8')
