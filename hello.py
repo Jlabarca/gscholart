@@ -3,4 +3,4 @@ import cgi
 data=cgi.FieldStorage()
 print "Content-type: text/html"
 print ""
-print "Hello, Woriild"+data['consulta'].value+"a"
+print "Hello, Woriild"+data['buscar'].value+"a"
