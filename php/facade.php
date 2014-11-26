@@ -29,7 +29,12 @@
 		}
 		
 		//QUERY
-		
+
+		public function retrieveJournalData($values){
+			$sql="SELECT sjr,total_docs,h_index FROM journal WHERE title=:title";
+			$array=$this->transaction->query($sql,$values);
+			return $array;
+		}
 		public function retrieveCategories(){
 			$sql="SELECT id,name FROM category ORDER BY name ASC";
 			$array=$this->transaction->query($sql);
