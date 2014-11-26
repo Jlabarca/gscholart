@@ -110,7 +110,8 @@
 									alert("There were no results found.");
 								}else{
 									var i = 0;
-									var data = new Array($("#input1 option").length);
+									var size = $("#journal option").length;
+									var data = new Array(size);
 									var cuartx=0;
 									var cuarty=0;
 									$("#journal option").each(function()
@@ -127,13 +128,30 @@
 										data[i++][3] =hindex;
 										//alert(data[i][0] +"-"+data[i][1]);
 									});
-									for (x in data) {
-										cuartx += data[x][2]
-									    cuarty += data[x][1];
-									}
-									cuartx = cuartx/4;
-									cuarty = cuarty/4;
-									highchart(cuartx,cuarty);
+									data.sort(function(a, b) {
+										    if (a[1] === b[1]) {
+										        return 0;
+										    }
+										    else {
+										        return (a[1] < b[1]) ? -1 : 1;
+										    }
+									});
+									//for(x in data)
+									//	alert(data[x][1]);
+
+									var qx = [data[parseInt(size/4)][1],data[parseInt(2*size/4)][1],data[parseInt(3*size/4)][1]];
+									data.sort(function(a, b) {
+										    if (a[2] === b[2]) {
+										        return 0;
+										    }
+										    else {
+										        return (a[2] < b[2]) ? -1 : 1;
+										    }
+									});
+									var qy = [data[parseInt(size/4)][2],data[parseInt(2*size/4)][2],data[parseInt(3*size/4)][2]];
+									if(chart1!=null)
+										chart1.destroy();
+									highchart(qx,qy);
 									for(x in data)
 										addSerie(data[x][0],data[x][1],data[x][2],data[x][3]);
 									chart1.redraw();	
@@ -160,8 +178,7 @@
 			});
 			return aux.responseText;
 	}
-     function highchart(cuartx,cuarty){
-     		alert(cuartx);
+     function highchart(qx,qy){
 			chartOptions = {
 		      chart: {
 		        renderTo: 'grafico',
@@ -183,7 +200,7 @@
 		            endOnTick: true,
 		            showLastLabel: true,
 		            plotLines: [{
-		                value: [[cuarty]],
+		                value: qx[0],
 		                color: 'black',
 		                width: 1,
 		                label: {
@@ -196,7 +213,7 @@
 			                }
 			            },
 			            {
-		                value: cuarty*2,
+		                value: qx[1],
 		                color: 'black',
 		                width: 1,
 		                label: {
@@ -210,7 +227,7 @@
 			                }
 			            },
 			               {
-		                value: cuarty*3,
+		                value: qx[2],
 		                color: 'black',
 		                width: 1,
 		                label: {
@@ -242,7 +259,7 @@
                      	
                  	},
                  	plotLines: [{
-		                value: 0.5,
+		                value: qy[0],
 		                color: 'black',
 		                width: 1,
 		                label: {
@@ -254,7 +271,7 @@
 			                }
 			            },
 			            {
-		                value: 1.25,
+		                value: qy[1],
 		                color: 'black',
 		                width: 1,
 		                height: 1,
@@ -267,7 +284,7 @@
 			                }
 			            },
 			               {
-		                value: 2,
+		                value: qy[2],
 		                color: 'black',
 		                width: 1,
 		                label: {
