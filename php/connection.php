@@ -3,8 +3,8 @@
 	class Connection{
 		private $dbhost="localhost";
 		private $dbuser="postgres";
-		private $dbpass="asd";
-		private $dbname="journalf";
+		private $dbpass="mortalku3";
+		private $dbname="prueba_2";
 		private $error;
 		private $conexion;
 		

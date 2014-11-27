@@ -2,7 +2,6 @@
 	require_once("php/facade.php");
 	$facade=new Facade();
 	$countryList=$facade->retrieveCountries();
-	$categoryList=$facade->retrieveCategories();
 ?>
 <html>
 	<head>
@@ -42,30 +41,27 @@
 				</select>
 				
 				<label for="category">Category</label>
-				<select id="category">
-					<option value="">select</option>
-					<?php
-						if($categoryList!=null){
-							foreach($categoryList as $cal){
-								echo "<option value='".$cal['id']."'>".$cal['name']."</option>";
-							}
-						}
-					?>
-				</select>
+				<span id="category_block">
+					<select id="category">
+						<option value="">select</option>
+					</select>
+				</span>
 				
-				<label hidden="true" for="Journal">Journal</label>
-				<span hidden="true" id="block">
+				
+				<span style='display:none' id="block">
 					<select disabled='disabled' id="journal">
 						<option value="">select</option>
 					</select>
 				</span>
-				<input type="button" value="toggle legend" id="toggleBtn" />
-				<label for="Paper">Papers</label>
-				<span id="block2">
+				
+				<input type="button" value="Show Legend" id="toggleBtn" />
+				
+				<span style='display:none' id="block2">
 					<select id="paper">
 						<option value="">select</option>
 					</select>
 				</span>
+
 
 				
 			<div id="grafico"></div>
@@ -84,11 +80,31 @@
 		var journal=[];	
 		var papers=[];
 		var chart1;
-
+				
 		$(document).ready(function(){
-			$('#country,#category').change(function(){
+			$("#country").change(function(){
+				country=$('#country').val();
+				$.ajax({
+					type:"POST",
+					url:"php/retrieveCategories.php",
+					data:"country="+country,
+					error:function(){
+						alert("Error");
+					},
+					success:function(data){
+						$("#grafico").empty();		
+						$("#category").empty();
+						$("#category").append(data);
+					}
+				});
+			});
+		});	
+		
+		$(document).ready(function(){
+			$('#category').change(function(){
 				country=$('#country').val();
 				category=$('#category').val();
+				alert(country+"--<"+category);
 				
 				if(country!="" && category!=""){
 					$('#filters').fadeOut(function() {
@@ -369,23 +385,104 @@
                                    y: 300
                                 },
                                 headingText: e.series.name,
-                                maincontentText: cargarp(obj),
+                                maincontentText: "<table'>"+cargarp(obj)+"</table>",
                                 width: 400,
                                 height: 700
                 });
       }
-
-      function cargarp(obj){
-	      	var str = '';
-	      	for(var key in obj)
-			    str += obj[key]['title'] +'<br/> '+obj[key]['journal_url']+'<br/> ';
-			return str;
-      }
+function cargarp(obj){
+	var str = '',journal_url='-',citations_url='-',pdf_url='-';
+	str+="<tr><td>Title</td><td>Journal URL</td><td>Citations URL</td><td>PDF URL</td></tr>";
+	for(var key in obj){
+		if(obj[key]['journal_url']!=null)
+			journal_url='<a href='+obj[key]['journal_url']+' target="blank_">Go</a>';	
+		if(obj[key]['citations_url']!=null)
+			citations_url='<a href='+obj[key]['citations_url']+' target="blank_">Go</a>';
+		if(obj[key]['pdf_url']!=null)
+			pdf_url='<a href='+obj[key]['pdf_url']+' target="blank_">Go</a>';
+			
+		str += "<tr><td>"+obj[key]['title']+'</td><td>'+journal_url+'</td><td>'+citations_url+'</td><td>'+pdf_url+'</td></tr>';
+	}
+	return str;
+}
 
 	//super indentación
-	(function(b,a){if(!b){return}var c=b.Chart.prototype,d=b.Legend.prototype;b.extend(c,{legendSetVisibility:function(h){var i=this,k=i.legend,e,g,j,m=i.options.legend,f,l;if(m.enabled==h){return}m.enabled=h;if(!h){d.destroy.call(k);e=k.allItems;if(e){for(g=0,j=e.length;g<j;++g){e[g].legendItem=a}}k.group={}}c.render.call(i);if(!m.floating){f=i.scroller;if(f&&f.render){l=i.xAxis[0].getExtremes();f.render(l.min,l.max)}}},legendHide:function(){this.legendSetVisibility(false)},legendShow:function(){this.legendSetVisibility(true)},legendToggle:function(e){if(typeof e!="boolean"){e=(this.options.legend.enabled^true)}this.legendSetVisibility(e)}})}(Highcharts));
-	$('#toggleBtn').click(function () { chart1.legendToggle();});
-          
+	(function(b,a){
+		if(!b){
+			return
+		}
+		var c=b.Chart.prototype,d=b.Legend.prototype;
+		b.extend(c,{legendSetVisibility:function(h){
+					var i=this,k=i.legend,e,g,j,m=i.options.legend,f,l;
+					if(m.enabled==h){
+						return
+					}m.enabled=h;
+					if(!h){
+						d.destroy.call(k);
+						e=k.allItems;
+						if(e){
+							for(g=0,j=e.length;g<j;++g){
+								e[g].legendItem=a
+							}
+						}
+						k.group={}
+					}
+					c.render.call(i);
+					if(!m.floating){
+						f=i.scroller;
+						if(f&&f.render){
+							l=i.xAxis[0].getExtremes();
+							f.render(l.min,l.max)}
+						}
+				},legendHide:function(){
+					this.legendSetVisibility(false)
+				},legendShow:function(){
+					this.legendSetVisibility(true)
+				},legendToggle:function(e){
+					if(typeof e!="boolean"){
+						e=(this.options.legend.enabled^true)
+					}
+					this.legendSetVisibility(e)
+				}
+			})}(Highcharts));
+	
+
+
+
+
+	$('#toggleBtn').click(function () { 
+		chart1.legendToggle();
+        chart1.xAxis[0].setExtremes(0.3,2.1);	
+        chart1.zoomOut();
+	});
+/*
+plotBand = chart1.xAxis[0].addPlotBand({
+            from: 5.5,
+            to: 7.5,
+            color: '#FCFFC5',
+            id: 'plot-band-1'
+        });
+
+    $buttonChange.click(function() {
+        $.extend(plotBand.options, {
+            color: '#000',
+            to: 10,
+            from: 2
+        });
+        plotBand.svgElem.destroy();
+        plotBand.svgElem = undefined;
+        plotBand.render();
+        
+    });
+    
+    $buttonChangeSize.click(function() {
+        $.extend(plotBand.options, {
+            to: 5,
+            from: 1.5
+        });
+        plotBand.render();
+    });      
+    */    
 	</script>
 
 </html>

@@ -46,4 +46,4 @@ CREATE TABLE journalCategory(
 	CONSTRAINT fkey_category FOREIGN KEY(id_category) REFERENCES category(id)
 );
 
-ALTER DATABASE prueba_4 SET client_encoding = 'utf8';
+ALTER DATABASE prueba SET client_encoding = 'utf8';

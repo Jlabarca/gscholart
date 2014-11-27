@@ -16,7 +16,7 @@
 	$data=Array("id_country"=>$country,
 				"id_category"=>$category);
 	sleep(1);
-	$listJournal=$facade->retrieveJournalForCountryAndCategory($data);
+	$listJournal=$facade->retrieveJournalByCountryAndCategory($data);
 	
 	if($listJournal!=null){
 		echo "<select id='journal'>";

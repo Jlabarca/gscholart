@@ -35,13 +35,15 @@
 			$array=$this->transaction->query($sql,$values);
 			return $array;
 		}
-		public function retrieveCategories(){
-			$sql="SELECT id,name FROM category ORDER BY name ASC";
-			$array=$this->transaction->query($sql);
+		public function retrieveCategoriesByCountry($values){
+			$sql="SELECT category.id,category.name FROM journal,journalCategory,category,country WHERE journal.issn=journalCategory.id_journal
+				  AND journalCategory.id_category=category.id AND journal.id_country=country.id AND country.id=:id GROUP BY category.id 
+				  ORDER BY category.name ASC";
+			$array=$this->transaction->query($sql,$values);
 			return $array;
 		}
 		
-		public function retrieveJournalForCountryAndCategory($values){
+		public function retrieveJournalByCountryAndCategory($values){
 			$sql="SELECT journal.title FROM country,category,journal,journalCategory 
 				  WHERE journal.issn=journalCategory.id_journal AND journalCategory.id_category=category.id 
 				  AND country.id=journal.id_country AND country.id=:id_country AND category.id=:id_category";
@@ -94,6 +96,46 @@
 			return $quantity;
 		}
 		
+		//ELIMINAR_1
+		
+		public function retrieveJournalWithoutCategory(){
+			$sql="SELECT journal.issn FROM journal LEFT JOIN journalcategory
+			      ON journalcategory.id_journal=journal.issn WHERE journalcategory.id_journal IS NULL";
+			$array=$this->transaction->query($sql);
+			return $array;
+		}
+		
+		public function retrieveCategoriesWithoutJournal(){
+			$sql="SELECT category.id FROM category LEFT JOIN journalcategory
+				  ON journalcategory.id_category=category.id WHERE journalcategory.id_category IS NULL";
+			$array=$this->transaction->query($sql);
+			return $array;
+		}
+		
+		public function retrieveCountriesWithoutJournal(){
+			$sql="SELECT country.id FROM country LEFT JOIN journal
+				  ON journal.id_country=country.id WHERE journal.id_country IS NULL;";
+			$array=$this->transaction->query($sql);
+			return $array;	
+		}
+		
+		//ELIMINAR_ELIMINAR
+		
+		public function deleteJournal($values){
+			$sql="DELETE FROM journal WHERE issn=:issn";
+			$this->transaction->queryTwo($sql,$values);
+		}
+		
+		public function deleteCategory($values){
+			$sql="DELETE FROM category WHERE id=:id";
+			$this->transaction->queryTwo($sql,$values);
+		}
+		
+		
+		public function deleteCountry($values){
+			$sql="DELETE FROM country WHERE id=:id";
+			$this->transaction->queryTwo($sql,$values);
+		}
 		
 		public function getMessage(){
 			return $this->transaction->getMessage();
