@@ -2,7 +2,6 @@
 	require_once("php/facade.php");
 	$facade=new Facade();
 	$countryList=$facade->retrieveCountries();
-	$categoryList=$facade->retrieveCategories();
 ?>
 <html>
 	<head>
@@ -42,30 +41,27 @@
 				</select>
 				
 				<label for="category">Category</label>
-				<select id="category">
-					<option value="">select</option>
-					<?php
-						if($categoryList!=null){
-							foreach($categoryList as $cal){
-								echo "<option value='".$cal['id']."'>".$cal['name']."</option>";
-							}
-						}
-					?>
-				</select>
+				<span id="category_block">
+					<select id="category">
+						<option value="">select</option>
+					</select>
+				</span>
 				
-				<label hidden="true" for="Journal">Journal</label>
-				<span hidden="true" id="block">
+				
+				<span style='display:none' id="block">
 					<select disabled='disabled' id="journal">
 						<option value="">select</option>
 					</select>
 				</span>
-				<input type="button" value="toggle legend" id="toggleBtn" />
-				<label for="Paper">Papers</label>
-				<span id="block2">
+				
+				<input type="button" value="Show Legend" id="toggleBtn" />
+				
+				<span style='display:none' id="block2">
 					<select id="paper">
 						<option value="">select</option>
 					</select>
 				</span>
+
 
 				
 			<div id="grafico"></div>
@@ -80,14 +76,34 @@
 			
 	</body>
 	<script>
-
 		var journal=[];	
 		var papers=[];
 		var chart1;
+				
 		$(document).ready(function(){
-			$('#country,#category').change(function(){
+			$("#country").change(function(){
+				country=$('#country').val();
+				$.ajax({
+					type:"POST",
+					url:"php/retrieveCategories.php",
+					data:"country="+country,
+					error:function(){
+						alert("Error");
+					},
+					success:function(data){
+						$("#grafico").empty();		
+						$("#category").empty();
+						$("#category").append(data);
+					}
+				});
+			});
+		});	
+		
+		$(document).ready(function(){
+			$('#category').change(function(){
 				country=$('#country').val();
 				category=$('#category').val();
+				alert(country+"--<"+category);
 				
 				if(country!="" && category!=""){
 					$('#filters').fadeOut(function() {
@@ -137,7 +153,6 @@
 									});
 									//for(x in data)
 									//	alert(data[x][1]);
-
 									var qx = [data[parseInt(size/4)][1],data[parseInt(2*size/4)][1],data[parseInt(3*size/4)][1]];
 									data.sort(function(a, b) {
 										    if (a[2] === b[2]) {
@@ -162,7 +177,6 @@
 				}
 			});
 		});
-
 	function loadJournalData(name){
 			var aux =$.ajax({
 				type:"POST",
@@ -222,7 +236,6 @@
 		                    style: {
 		                        color: 'gray'
 		                    }
-
 			                }
 			            },
 			               {
@@ -249,7 +262,6 @@
 		            floating: false,
 		            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
 		        },
-
 		        yAxis: {
 		            title: {
 		                text: 'Documents'
@@ -297,9 +309,7 @@
 			            ]
         			},
 		        plotOptions: {
-
 		         	 series: {
-
 			                point: {
 			                    events: {
 			                        click: function() {
@@ -320,7 +330,6 @@
 		        
 		};
 	chart1 = new Highcharts.Chart(chartOptions);		
-
 }	
 	function addSerie(nombre,x,y,z){
 			var chart = $('#grafico').highcharts();
@@ -331,7 +340,6 @@
 		         data: [[x,y,z]]  
 			}, false);
 			//chart.redraw();
-
 	}
 	function searchPapers(journal,e){
                 $.ajax({
@@ -354,11 +362,8 @@
 					   alert(thrownError);
 					}
                 });
-
             
       }    
-
-
       function papersList(obj,e){
       	       hs.htmlExpand(null, {
                                 pageOrigin: {
@@ -388,7 +393,6 @@ function cargarp(obj){
 	}
 	return str;
 }
-
 	//super indentación
 	(function(b,a){
 		if(!b){
@@ -429,10 +433,6 @@ function cargarp(obj){
 				}
 			})}(Highcharts));
 	
-
-
-
-
 	$('#toggleBtn').click(function () { 
 		chart1.legendToggle();
         chart1.xAxis[0].setExtremes(0.3,2.1);	
@@ -445,7 +445,6 @@ plotBand = chart1.xAxis[0].addPlotBand({
             color: '#FCFFC5',
             id: 'plot-band-1'
         });
-
     $buttonChange.click(function() {
         $.extend(plotBand.options, {
             color: '#000',
