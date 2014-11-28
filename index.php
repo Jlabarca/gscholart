@@ -76,11 +76,11 @@
 			
 	</body>
 	<script>
-
 		var journal=[];	
 		var papers=[];
 		var chart1;
-				
+
+		
 		$(document).ready(function(){
 			$("#country").change(function(){
 				country=$('#country').val();
@@ -154,7 +154,6 @@
 									});
 									//for(x in data)
 									//	alert(data[x][1]);
-
 									var qx = [data[parseInt(size/4)][1],data[parseInt(2*size/4)][1],data[parseInt(3*size/4)][1]];
 									data.sort(function(a, b) {
 										    if (a[2] === b[2]) {
@@ -179,7 +178,6 @@
 				}
 			});
 		});
-
 	function loadJournalData(name){
 			var aux =$.ajax({
 				type:"POST",
@@ -239,7 +237,6 @@
 		                    style: {
 		                        color: 'gray'
 		                    }
-
 			                }
 			            },
 			               {
@@ -266,7 +263,6 @@
 		            floating: false,
 		            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
 		        },
-
 		        yAxis: {
 		            title: {
 		                text: 'Documents'
@@ -314,9 +310,7 @@
 			            ]
         			},
 		        plotOptions: {
-
 		         	 series: {
-
 			                point: {
 			                    events: {
 			                        click: function() {
@@ -337,7 +331,6 @@
 		        
 		};
 	chart1 = new Highcharts.Chart(chartOptions);		
-
 }	
 	function addSerie(nombre,x,y,z){
 			var chart = $('#grafico').highcharts();
@@ -348,7 +341,6 @@
 		         data: [[x,y,z]]  
 			}, false);
 			//chart.redraw();
-
 	}
 	function searchPapers(journal,e){
                 $.ajax({
@@ -371,11 +363,8 @@
 					   alert(thrownError);
 					}
                 });
-
             
       }    
-
-
       function papersList(obj,e){
       	       hs.htmlExpand(null, {
                                 pageOrigin: {
@@ -405,7 +394,6 @@ function cargarp(obj){
 	}
 	return str;
 }
-
 	//super indentación
 	(function(b,a){
 		if(!b){
@@ -446,10 +434,6 @@ function cargarp(obj){
 				}
 			})}(Highcharts));
 	
-
-
-
-
 	$('#toggleBtn').click(function () { 
 		chart1.legendToggle();
         chart1.xAxis[0].setExtremes(0.3,2.1);	
@@ -462,7 +446,6 @@ plotBand = chart1.xAxis[0].addPlotBand({
             color: '#FCFFC5',
             id: 'plot-band-1'
         });
-
     $buttonChange.click(function() {
         $.extend(plotBand.options, {
             color: '#000',
