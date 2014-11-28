@@ -57,6 +57,20 @@
 			}	
 		}	
 		
+		public function queryTwo($sql,$values=array()){
+			try{
+				$sql_trans=$this->connection->prepare($sql);
+				foreach($values as $field=>$value){
+					$sql_trans->bindValue(":".$field,$value);
+				}
+				$sql_trans->execute();
+
+			}catch(PDOException $e){
+				$this->error=true;
+				$this->message=$this->message."Error: ".$e->getMessage()."\n";
+			}	
+		}
+		
 		public function consolidate(){
 			if($this->error==true){
 				$this->connection->rollBack();

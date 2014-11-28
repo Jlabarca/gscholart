@@ -1,5 +1,5 @@
 body{
-	background-color:#D0D0D0;
+	background-color:#2e5678;
 }
 
 #espere,#main{
@@ -7,28 +7,27 @@ body{
 	font-size:13px;
 }
 
-
 #espere {	
 	color: #767676;
 	text-align:center;
-	margin:200px auto;
+	margin:220px auto;
 }
 
 #main{
 	margin:15px auto;
-	width:980px;
-	height:660px;
-	padding:10px;
+	width:960px;
+	height:570px;
+	padding:30px;
 	background-color:white;
 }
 
-#category,#country,#journal{
-	margin:auto;
-	width:400;
+
+#category,#country{
+	width:300;
 }
 
 #grafico{
-	margin:auto;
+	margin-top:15px;
 	width:900px;
-	height:600px;
+	height:550px;
 }

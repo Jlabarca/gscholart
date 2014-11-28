@@ -125,8 +125,30 @@
 		}
 	}
 	
-
 	
+	$ljournal=$facade->retrieveJournalWithoutCategory();
+	
+	if($ljournal!=null){
+		foreach($ljournal as $lj){
+			$facade->deleteJournal(Array("issn"=>$lj['issn']));
+		}
+	}
+	
+	$lcategory=$facade->retrieveCategoriesWithoutJournal();
+	
+	if($lcategory!=null){
+		foreach($lcategory as $lc){
+			$facade->deleteCategory(Array("id"=>$lc['id']));
+		}
+	}
+	
+	$lcountry=$facade->retrieveCountriesWithoutJournal();
+	
+	if($lcountry!=null){
+		foreach($lcountry as $lc){
+			$facade->deleteCountry(Array("id"=>$lc['id']));
+		}
+	}
 	
 	
 	if($facade->consolidate()){

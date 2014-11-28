@@ -2,7 +2,6 @@
 	require_once("php/facade.php");
 	$facade=new Facade();
 	$countryList=$facade->retrieveCountries();
-	$categoryList=$facade->retrieveCategories();
 ?>
 <html>
 	<head>
@@ -42,30 +41,27 @@
 				</select>
 				
 				<label for="category">Category</label>
-				<select id="category">
-					<option value="">select</option>
-					<?php
-						if($categoryList!=null){
-							foreach($categoryList as $cal){
-								echo "<option value='".$cal['id']."'>".$cal['name']."</option>";
-							}
-						}
-					?>
-				</select>
+				<span id="category_block">
+					<select id="category">
+						<option value="">select</option>
+					</select>
+				</span>
 				
-				<label hidden="true" for="Journal">Journal</label>
-				<span hidden="true" id="block">
+				
+				<span style='display:none' id="block">
 					<select disabled='disabled' id="journal">
 						<option value="">select</option>
 					</select>
 				</span>
-				<input type="button" value="toggle legend" id="toggleBtn" />
-				<label for="Paper">Papers</label>
-				<span id="block2">
+				
+				<input type="button" value="Show Legend" id="toggleBtn" />
+				
+				<span style='display:none' id="block2">
 					<select id="paper">
 						<option value="">select</option>
 					</select>
 				</span>
+
 
 				
 			<div id="grafico"></div>
@@ -84,10 +80,31 @@
 		var journal=[];	
 		var papers=[];
 		var chart1;
+				
 		$(document).ready(function(){
-			$('#country,#category').change(function(){
+			$("#country").change(function(){
+				country=$('#country').val();
+				$.ajax({
+					type:"POST",
+					url:"php/retrieveCategories.php",
+					data:"country="+country,
+					error:function(){
+						alert("Error");
+					},
+					success:function(data){
+						$("#grafico").empty();		
+						$("#category").empty();
+						$("#category").append(data);
+					}
+				});
+			});
+		});	
+		
+		$(document).ready(function(){
+			$('#category').change(function(){
 				country=$('#country').val();
 				category=$('#category').val();
+				alert(country+"--<"+category);
 				
 				if(country!="" && category!=""){
 					$('#filters').fadeOut(function() {
@@ -368,7 +385,7 @@
                                    y: 300
                                 },
                                 headingText: e.series.name,
-                                maincontentText: "<table'>"+cargarp(obj)+"</table>",
+                                maincontentText: "<table border='1''>"+cargarp(obj)+"</table>",
                                 width: 400,
                                 height: 700
                 });
