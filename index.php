@@ -342,16 +342,9 @@
 }	
 	function addSerie(nombre,x,y,z){
 			var chart = $('#grafico').highcharts();
-<<<<<<< HEAD
-			var r = Math.floor(Math.random() * 200) + 50;
-			var g = Math.floor(Math.random() * 200) + 50;
-			var b = Math.floor(Math.random() * 200) + 50;
-			
-=======
->>>>>>> a2bed3837b49de0022d2a5a800ca7d7eb6928685
 			chart.addSeries({  
 			     name: nombre,
-		         color: 'rgba('+r+','+g+','+b+',2)',
+		         color: 'rgba('+(Math.floor(Math.random() * 205) + 70)+','+(Math.floor(Math.random() * 205) + 70)+','+(Math.floor(Math.random() * 205) + 70) +',2)',
 		         //color: 'rgba(51, 102, 153, .5)',
 		         data: [[x,y,z]]  
 			}, false);
@@ -359,11 +352,7 @@
 	}
 	function searchPapers(journal,e){
 				$('#filters').fadeOut();
-<<<<<<< HEAD
-				$('#espere').fadeIn();
-=======
 				$('#wait').fadeIn();
->>>>>>> a2bed3837b49de0022d2a5a800ca7d7eb6928685
                 $.ajax({
                     type:"POST",
                     url: "gsearch.py",
@@ -382,11 +371,7 @@
 							alert("No Results Found");
 							hayhs = false;
 		      			}
-<<<<<<< HEAD
-						$('#espere').fadeOut();
-=======
 						$('#wait').fadeOut();
->>>>>>> a2bed3837b49de0022d2a5a800ca7d7eb6928685
 						$('#filters').fadeIn();
 
 
