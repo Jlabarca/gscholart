@@ -18,13 +18,19 @@
 		<script type="text/javascript" src="http://www.highcharts.com/media/com_demo/highslide.config.js" charset="utf-8"></script>
 		<link rel="stylesheet" type="text/css" href="http://www.highcharts.com/media/com_demo/highslide.css" />
 		<link rel="stylesheet" href="assets/css/uniform.default.min.css" type="text/css" media="screen"/>
-		<link rel="stylesheet" href="assets/css/style.css" type="text/css"/>
+		
+		<link rel="stylesheet" href="assets/css/background.css" type="text/css"/>
+		<link rel="stylesheet" href="assets/css/index.css" type="text/css"/>
+		<link rel="stylesheet" href="assets/css/table.css" type="text/css"/>
+		<link rel="stylesheet" href="assets/css/wait.css" type="text/css"/>
 		
 		<script>
 			$(function () {
 				$("select").uniform();
 			});
 		</script>
+	</head>
+	
 	<body>
 		<div id="main">
 			<div id="filters">
@@ -67,7 +73,7 @@
 			<div id="grafico"></div>
 
 			</div>
-			<div id="espere" style="display:none;">
+			<div id="wait" style="display:none;">
 				Please Wait...<br/>
 				<img src="assets/images/ajax-loader.gif"/>
 			</div>
@@ -108,7 +114,7 @@
 				
 				if(country!="" && category!=""){
 					$('#filters').fadeOut(function() {
-						$('#espere').fadeIn();
+						$('#wait').fadeIn();
 						$.ajax({
 							type:"POST",
 							url:"php/retrieveJournals.php",
@@ -118,7 +124,7 @@
 							},
 							success:function(data){
 								$("#paper").empty();
-								$('#espere').hide(0);
+								$('#wait').hide(0);
 								$('#filters').show(500);
 								$("#block").empty();
 								$("#block").append(data);
@@ -336,10 +342,13 @@
 }	
 	function addSerie(nombre,x,y,z){
 			var chart = $('#grafico').highcharts();
+<<<<<<< HEAD
 			var r = Math.floor(Math.random() * 200) + 50;
 			var g = Math.floor(Math.random() * 200) + 50;
 			var b = Math.floor(Math.random() * 200) + 50;
 			
+=======
+>>>>>>> a2bed3837b49de0022d2a5a800ca7d7eb6928685
 			chart.addSeries({  
 			     name: nombre,
 		         color: 'rgba('+r+','+g+','+b+',2)',
@@ -350,7 +359,11 @@
 	}
 	function searchPapers(journal,e){
 				$('#filters').fadeOut();
+<<<<<<< HEAD
 				$('#espere').fadeIn();
+=======
+				$('#wait').fadeIn();
+>>>>>>> a2bed3837b49de0022d2a5a800ca7d7eb6928685
                 $.ajax({
                     type:"POST",
                     url: "gsearch.py",
@@ -369,7 +382,11 @@
 							alert("No Results Found");
 							hayhs = false;
 		      			}
+<<<<<<< HEAD
 						$('#espere').fadeOut();
+=======
+						$('#wait').fadeOut();
+>>>>>>> a2bed3837b49de0022d2a5a800ca7d7eb6928685
 						$('#filters').fadeIn();
 
 
