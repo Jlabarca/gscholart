@@ -336,9 +336,13 @@
 }	
 	function addSerie(nombre,x,y,z){
 			var chart = $('#grafico').highcharts();
+			var r = Math.floor(Math.random() * 200) + 50;
+			var g = Math.floor(Math.random() * 200) + 50;
+			var b = Math.floor(Math.random() * 200) + 50;
+			
 			chart.addSeries({  
 			     name: nombre,
-		         color: 'rgba('+(Math.floor(Math.random() * 205) + 70)+','+(Math.floor(Math.random() * 205) + 70)+','+(Math.floor(Math.random() * 205) + 70) +',2)',
+		         color: 'rgba('+r+','+g+','+b+',2)',
 		         //color: 'rgba(51, 102, 153, .5)',
 		         data: [[x,y,z]]  
 			}, false);
