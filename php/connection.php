@@ -4,7 +4,7 @@
 		private $dbhost="localhost";
 		private $dbuser="postgres";
 		private $dbpass="mortalku3";
-		private $dbname="prueba_2";
+		private $dbname="journalf";
 		private $error;
 		private $conexion;
 		

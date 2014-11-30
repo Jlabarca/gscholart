@@ -1,0 +1,21 @@
+#main{
+	position:float;	
+	width:350px;
+	height:	320px;
+	padding:10px 30px 10px 40px;
+	background-color:white;
+	font-family:Segoe UI;
+	font-size:13px;
+	margin: 100px auto auto auto;
+	border-radius:4px;
+}
+
+h4{
+	margin-bottom:30px;
+}
+
+.button{
+	float:right;
+	margin:15px 13px 0 0;
+}
+

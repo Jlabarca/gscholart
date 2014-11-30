@@ -18,13 +18,19 @@
 		<script type="text/javascript" src="http://www.highcharts.com/media/com_demo/highslide.config.js" charset="utf-8"></script>
 		<link rel="stylesheet" type="text/css" href="http://www.highcharts.com/media/com_demo/highslide.css" />
 		<link rel="stylesheet" href="assets/css/uniform.default.min.css" type="text/css" media="screen"/>
-		<link rel="stylesheet" href="assets/css/style.css" type="text/css"/>
+		
+		<link rel="stylesheet" href="assets/css/background.css" type="text/css"/>
+		<link rel="stylesheet" href="assets/css/index.css" type="text/css"/>
+		<link rel="stylesheet" href="assets/css/table.css" type="text/css"/>
+		<link rel="stylesheet" href="assets/css/wait.css" type="text/css"/>
 		
 		<script>
 			$(function () {
 				$("select").uniform();
 			});
 		</script>
+	</head>
+	
 	<body>
 		<div id="main">
 			<div id="filters">
@@ -54,7 +60,7 @@
 					</select>
 				</span>
 				
-				<input type="button" value="Show Legend" id="toggleBtn" />
+				<input type="button" value="Journal List" id="toggleBtn" />
 				
 				<span style='display:none' id="block2">
 					<select id="paper">
@@ -67,7 +73,7 @@
 			<div id="grafico"></div>
 
 			</div>
-			<div id="espere" style="display:none;">
+			<div id="wait" style="display:none;">
 				Please Wait...<br/>
 				<img src="assets/images/ajax-loader.gif"/>
 			</div>
@@ -76,11 +82,11 @@
 			
 	</body>
 	<script>
-
 		var journal=[];	
 		var papers=[];
 		var chart1;
-				
+		var hayhs = false;
+		
 		$(document).ready(function(){
 			$("#country").change(function(){
 				country=$('#country').val();
@@ -104,11 +110,11 @@
 			$('#category').change(function(){
 				country=$('#country').val();
 				category=$('#category').val();
-				alert(country+"--<"+category);
+				//alert(country+"--<"+category);
 				
 				if(country!="" && category!=""){
 					$('#filters').fadeOut(function() {
-						$('#espere').fadeIn();
+						$('#wait').fadeIn();
 						$.ajax({
 							type:"POST",
 							url:"php/retrieveJournals.php",
@@ -118,7 +124,7 @@
 							},
 							success:function(data){
 								$("#paper").empty();
-								$('#espere').hide(0);
+								$('#wait').hide(0);
 								$('#filters').show(500);
 								$("#block").empty();
 								$("#block").append(data);
@@ -134,14 +140,11 @@
 									{
 										var aux = loadJournalData($(this).text());
 										var split=aux.split(',');
-										var sjr=parseFloat(split[0]);
-										var docs=parseFloat(split[1]);
-										var hindex=parseFloat(split[2]);
 										data[i] = new Array(4);
 										data[i][0] =$(this).text();
-										data[i][1] =sjr;
-										data[i][2] =docs;
-										data[i++][3] =hindex;
+										data[i][1] =parseFloat(split[0]);
+										data[i][2] =parseFloat(split[1]);
+										data[i++][3] = parseFloat(split[2]);
 										//alert(data[i][0] +"-"+data[i][1]);
 									});
 									data.sort(function(a, b) {
@@ -154,7 +157,6 @@
 									});
 									//for(x in data)
 									//	alert(data[x][1]);
-
 									var qx = [data[parseInt(size/4)][1],data[parseInt(2*size/4)][1],data[parseInt(3*size/4)][1]];
 									data.sort(function(a, b) {
 										    if (a[2] === b[2]) {
@@ -180,11 +182,12 @@
 			});
 		});
 
+
 	function loadJournalData(name){
 			var aux =$.ajax({
 				type:"POST",
 				url:"php/retrieveJournalData.php",
-				data:"name="+name,
+				data:"name="+encodeURIComponent(name)	,
 				error:function(){
 					alert("Error");
 				},
@@ -239,7 +242,6 @@
 		                    style: {
 		                        color: 'gray'
 		                    }
-
 			                }
 			            },
 			               {
@@ -266,7 +268,6 @@
 		            floating: false,
 		            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
 		        },
-
 		        yAxis: {
 		            title: {
 		                text: 'Documents'
@@ -314,13 +315,14 @@
 			            ]
         			},
 		        plotOptions: {
-
 		         	 series: {
-
 			                point: {
 			                    events: {
 			                        click: function() {
+			                        	if(!hayhs){
+			                        		hayhs = true;
 			                        		searchPapers(this.series.name,this);								                        	
+			                        	}
 			                         
 			                        }
 			                    }
@@ -331,26 +333,26 @@
 		        },
 		        tooltip: {
 		                    headerFormat: '<b>{series.name}</b><br>',
-		                    pointFormat: 'Documents: {point.x}, SJR: {point.y},  H index: {point.z}' 
+		                    pointFormat: 'SJR: {point.x} | Documents: {point.y} | H index: {point.z}' 
 		        }
 		    
 		        
 		};
 	chart1 = new Highcharts.Chart(chartOptions);		
-
 }	
 	function addSerie(nombre,x,y,z){
 			var chart = $('#grafico').highcharts();
-			chart.addSeries({                        
+			chart.addSeries({  
 			     name: nombre,
 		         color: 'rgba('+(Math.floor(Math.random() * 205) + 70)+','+(Math.floor(Math.random() * 205) + 70)+','+(Math.floor(Math.random() * 205) + 70) +',2)',
 		         //color: 'rgba(51, 102, 153, .5)',
 		         data: [[x,y,z]]  
 			}, false);
 			//chart.redraw();
-
 	}
 	function searchPapers(journal,e){
+				$('#filters').fadeOut();
+				$('#wait').fadeIn();
                 $.ajax({
                     type:"POST",
                     url: "gsearch.py",
@@ -363,7 +365,16 @@
 						$.each(obj, function(k, v) {
 						    $('<option>').val(v.journal_url).text(v.title).appendTo('#paper');
 						});
-						papersList(obj,e);
+						if(obj.length > 0)
+							papersList(obj,e);
+		      			else{
+							alert("No Results Found");
+							hayhs = false;
+		      			}
+						$('#wait').fadeOut();
+						$('#filters').fadeIn();
+
+
                     },
 					error: function (xhr, ajaxOptions, thrownError) {
 					   alert(xhr.status);
@@ -371,41 +382,42 @@
 					   alert(thrownError);
 					}
                 });
-
             
       }    
-
-
       function papersList(obj,e){
       	       hs.htmlExpand(null, {
                                 pageOrigin: {
                                    // x: e.pageX || e.clientX,
-                                   // y: e.pageY || e.clientY
-                                   x: -300,
-                                   y: 300
+                                    x: 0,
+                   				    y: 0
+                                  
                                 },
                                 headingText: e.series.name,
-                                maincontentText: "<table'>"+cargarp(obj)+"</table>",
-                                width: 400,
-                                height: 700
+                                maincontentText: "<div class='CSSTableGenerator'> <table>"+cargarp(obj)+"</table> </div>",
+                                width: 1000,
+                                height: 550,
+                            
                 });
-      }
+  	           hs.Expander.prototype.onBeforeClose = function(sender) {
+            					hayhs = false;
+            				}
+  }
+
 function cargarp(obj){
 	var str = '',journal_url='-',citations_url='-',pdf_url='-';
 	str+="<tr><td>Title</td><td>Journal URL</td><td>Citations URL</td><td>PDF URL</td></tr>";
 	for(var key in obj){
 		if(obj[key]['journal_url']!=null)
-			journal_url='<a href='+obj[key]['journal_url']+' target="blank_">Go</a>';	
+			journal_url='<a href='+obj[key]['journal_url']+' target="blank_">Link</a>';	
 		if(obj[key]['citations_url']!=null)
-			citations_url='<a href='+obj[key]['citations_url']+' target="blank_">Go</a>';
+			citations_url='<a href='+obj[key]['citations_url']+' target="blank_">Link</a>';
 		if(obj[key]['pdf_url']!=null)
-			pdf_url='<a href='+obj[key]['pdf_url']+' target="blank_">Go</a>';
+			pdf_url='<a href='+obj[key]['pdf_url']+' target="blank_">Link</a>';
 			
 		str += "<tr><td>"+obj[key]['title']+'</td><td>'+journal_url+'</td><td>'+citations_url+'</td><td>'+pdf_url+'</td></tr>';
 	}
 	return str;
 }
-
 	//super indentación
 	(function(b,a){
 		if(!b){
@@ -446,10 +458,6 @@ function cargarp(obj){
 				}
 			})}(Highcharts));
 	
-
-
-
-
 	$('#toggleBtn').click(function () { 
 		chart1.legendToggle();
         chart1.xAxis[0].setExtremes(0.3,2.1);	
@@ -462,7 +470,6 @@ plotBand = chart1.xAxis[0].addPlotBand({
             color: '#FCFFC5',
             id: 'plot-band-1'
         });
-
     $buttonChange.click(function() {
         $.extend(plotBand.options, {
             color: '#000',
