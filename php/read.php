@@ -1,14 +1,19 @@
 <?php
 	header('Content-Type: text/html; charset=UTF-8');
+	header('Content-type: application/json');
+	
 	ini_set('memory_limit','-1');
 	ini_set('max_execution_time', 10000);
 	
 	require_once("facade.php");
 	require_once("loadData.php");
-	$msg="";
+	//$msg="";
+	$return['msg']="";
+	$return['error']=false;
+	
 	$loadData=new LoadData();
 	
-	
+	sleep(1);
 	$category=$loadData->validateFile($_FILES['category'],"cat");
 	$scimagojr=$loadData->validateFile($_FILES['scimago'],"sc");
 	$cwts=$loadData->validateFile($_FILES['cwts'],"cwrts");
@@ -16,9 +21,9 @@
 	if($loadData->getErrors()){
 		$errors=$loadData->getErrors();
 		for($i=0;$i<count($errors);$i++){
-			$msg=$msg."".$errors[$i]."\n";
+			$return['msg']=$return['msg']."".$errors[$i]."\n";
 		}
-		echo $msg;
+		$return['error']=true;
 	}else{
 		$facade=new Facade();
 		$category=$loadData->retrieveCSVArray($category);
@@ -93,7 +98,7 @@
 						if($category[$j]!="NULL"){
 							$quantity=$facade->existsJournalCategory(Array("id_journal"=>$issn,"id_category"=>$category[$j]));
 							if($quantity==0){
-								echo $issn."-->".$category[$j]."<br/>";
+								//echo $issn."-->".$category[$j]."<br/>";
 								$data=Array("id_journal"=>$issn,
 											"id_category"=>$category[$j]);
 							
@@ -132,12 +137,16 @@
 		
 		
 		if($facade->consolidate()){
-			echo $facade->getMessage();
+			$return['msg']=$facade->getMessage();
+			$return['error']=false;
 		}else{
-			echo $facade->getMessage();
+			$return['msg']=$facade->getMessage();
+			$return['error']=true;
 		}
 	
 	}
+	
+	echo json_encode($return); 
 	
 
 
