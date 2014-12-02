@@ -1,4 +1,4 @@
-#main{
+#block{
 	position:float;	
 	width:350px;
 	height:	320px;
@@ -10,6 +10,10 @@
 	border-radius:4px;
 }
 
+#wait{
+	margin:120px auto;
+}
+
 h4{
 	margin-bottom:30px;
 }
@@ -18,4 +22,3 @@ h4{
 	float:right;
 	margin:15px 13px 0 0;
 }
-
